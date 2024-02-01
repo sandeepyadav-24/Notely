@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+
+  <body>
+    <h1>TO DO APP</h1>
+    <input type="text" id="title" placeholder="title" />
+    <input type="text" id="description" placeholder="Description" />
+    <button onclick="onPress()">Sumbit</button>
+    <div id="mainArea"></div>
+  </body>
+  <script>
+    /////// -----ON Press Function--- ////
+    const onPress = () => {
+      // Title Variable
+      var title = document.getElementById("title").value;
+      // Description Variable
+      var description = document.getElementById("description").value;
+      console.log(`${title} , ${description}`);
+
+      //////////////------Post Fetch Function ----------//////////
+      // Post Callback Response
+      const postCallbackResponse = (data) => {
+        console.log(data);
+      };
+
+      // Post Callback function
+      const postCallback = (response) => {
+        response.json().then(postCallbackResponse);
+      };
+
+      // Post Fetch Function
+
+      const postData = () => {
+        fetch("http://localhost:3000/todos/", {
+          method: "POST",
+          body: JSON.stringify({
+            title: title,
+            description: description,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }).then(postCallback);
+      };
+
+      // Calling postData Function
+      postData();
+
+      // Delete Button fn
+      const toDelete = (id) => {
+        console.log(id);
+      };
+
+      /////////////--------- GET FETCH Function -----------/////
+      // Get  Callback Response
+      const getCallbackResponse = (data) => {
+        console.log(data);
+        var parentElement = document.getElementById("mainArea");
+        for (var i = 0; i < data.length; i++) {
+          //  Child Element
+          var childElement = document.createElement("div");
+
+          // First Span
+          var grandchildElement1 = document.createElement("span");
+          grandchildElement1.innerHTML = data[i].title;
+          // Seconf Span
+          var grandchildElement2 = document.createElement("span");
+          grandchildElement2.innerHTML = data[i].description;
+          // first Button
+          var grandchildElement3 = document.createElement("button");
+          grandchildElement3.innerHTML = "delete";
+          grandchildElement3.setAttribute(
+            "onClick",
+            "toDelete(" + data[i].id + ")"
+          );
+
+          //Append First Child
+          childElement.append(grandchildElement1);
+          //Append Second Child
+          childElement.append(grandchildElement2);
+          //Append Third Child
+          childElement.append(grandchildElement3);
+
+          // Append Child Element To PArent Element
+          parentElement.append(childElement);
+        }
+
+        //parentElement.innerHTML = JSON.stringify(data);
+      };
+
+      // Post Callback function
+      const getCallback = (response) => {
+        console.log(response);
+        response.json().then(getCallbackResponse);
+      };
+
+      // Get Fetch Function
+      const getData = () => {
+        fetch("http://localhost:3000/todos/", {
+          method: "GET",
+        }).then(getCallback);
+      };
+
+      // Calling Get Data Function
+      getData();
+    };
+  </script>
+</html>
